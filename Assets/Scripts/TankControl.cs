@@ -49,9 +49,8 @@ namespace Tank
 			Quaternion _targetRotation = Quaternion.Euler(0, 0, _angleDeg + 90);
 			Quaternion _rotation = Quaternion.RotateTowards(transform.localRotation, _targetRotation, rotationVelocity * Time.deltaTime);
 			transform.localRotation = _rotation;
+		
 		}
-
-
 
 	}
 }

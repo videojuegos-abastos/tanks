@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4631936694789501562}
   - component: {fileID: 4631936694789501540}
   - component: {fileID: -4605167826684022938}
+  - component: {fileID: 9191115969996765346}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -117,6 +118,32 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &9191115969996765346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631936694789501563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec14d29ddf999c144ba2553801999f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &4631936696617556956
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,6 +155,7 @@ GameObject:
   - component: {fileID: 4631936696617556959}
   - component: {fileID: 4631936696617556958}
   - component: {fileID: 4631936696617556953}
+  - component: {fileID: 4575601798698551063}
   m_Layer: 0
   m_Name: cannon
   m_TagString: Untagged
@@ -217,3 +245,29 @@ MonoBehaviour:
   bullet: {fileID: 8566704004410660916, guid: 5b18d35c407b2124c91a21a0ac9b2a05, type: 3}
   spawnOffset: 0.75
   numBullets: 5
+--- !u!114 &4575601798698551063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631936696617556956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec14d29ddf999c144ba2553801999f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1

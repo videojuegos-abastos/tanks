@@ -7,6 +7,16 @@ public class NetworkTestingManager : NetworkBehaviour
 {
 	void Start()
 	{
+		StartNetwork();
+	}
+
+	public override void OnDestroy()
+	{
+		StartNetwork();
+	}
+
+	void StartNetwork()
+	{
 
 		if (Application.isEditor)
 		{
