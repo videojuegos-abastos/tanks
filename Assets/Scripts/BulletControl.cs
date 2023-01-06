@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using Unity.Netcode;
 
 
 namespace Tank
 {
-	public class BulletControl : MonoBehaviour
+	public class BulletControl : NetworkBehaviour
 	{
 
 		[SerializeField]
@@ -16,7 +16,7 @@ namespace Tank
 		[SerializeField]
 		int countDownTime;
 
-		public UnityEvent OnDetonatesEvent;
+		public UnityEvent OnDetonateEvent;
 
 
 		IEnumerator CountDownCoroutine()
@@ -30,9 +30,9 @@ namespace Tank
 		IEnumerator DetonateCoroutine()
 		{
 
-			if (OnDetonatesEvent == null) throw new System.Exception("BulletControl: OnDetonatesEvent is null (DetonateCoroutine)");
+			if (OnDetonateEvent == null) throw new System.Exception("BulletControl: OnDetonateEvent is null (DetonateCoroutine)");
 
-			OnDetonatesEvent.Invoke();
+			OnDetonateEvent.Invoke();
 
 			yield return null;
 

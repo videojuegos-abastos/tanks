@@ -3,21 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class NetworkTestingManager : NetworkBehaviour
+public class NetworkTestingManager : MonoBehaviour
 {
 	void Start()
 	{
-		StartNetwork();
-	}
-
-	public override void OnDestroy()
-	{
-		StartNetwork();
-	}
-
-	void StartNetwork()
-	{
-
 		if (Application.isEditor)
 		{
 			NetworkManager.Singleton.StartHost();

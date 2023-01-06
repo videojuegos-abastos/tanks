@@ -216,9 +216,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1011249240}
-  - component: {fileID: 1011249242}
   - component: {fileID: 1011249239}
   - component: {fileID: 1011249241}
+  - component: {fileID: 1011249242}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -244,7 +244,17 @@ MonoBehaviour:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1011249241}
     PlayerPrefab: {fileID: 4631936694789501563, guid: 3916a1b0f48118546bc0d36995db485a, type: 3}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 4631936694789501563, guid: 3916a1b0f48118546bc0d36995db485a, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8566704004410660919, guid: 5b18d35c407b2124c91a21a0ac9b2a05, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0

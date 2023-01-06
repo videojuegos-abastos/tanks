@@ -21,7 +21,7 @@ namespace Tank
 		int numBullets;
 
 
-		UnityEvent OnBulletDetonatesEvent;
+		UnityEvent OnBulletDetonateEvent;
 		
 		int remainingBullets;
 		bool ableToShoot => remainingBullets > 0;
@@ -30,8 +30,8 @@ namespace Tank
 		{
 			remainingBullets = numBullets;
 
-			OnBulletDetonatesEvent = new UnityEvent();
-			OnBulletDetonatesEvent.AddListener(OnBulletDetonates);
+			OnBulletDetonateEvent = new UnityEvent();
+			OnBulletDetonateEvent.AddListener(OnBulletDetonate);
 		}
 
 		void Update()
@@ -43,7 +43,7 @@ namespace Tank
 			}
 		}
 
-		void OnBulletDetonates()
+		void OnBulletDetonate()
 		{
 			remainingBullets += 1;
 		}
@@ -81,9 +81,14 @@ namespace Tank
 
 			Vector3 _offset = -transform.up * spawnOffset;
 			BulletControl _bullet = Instantiate<BulletControl>(bullet, transform.position + _offset, transform.rotation);
-			_bullet.OnDetonatesEvent = OnBulletDetonatesEvent;
+			_bullet.OnDetonateEvent = OnBulletDetonateEvent;
 
-			yield return null; 
+
+			_bullet.GetComponent<NetworkObject>().Spawn();
+			//_bullet.GetComponent<NetworkObject>().SpawnWithOwnership();
+
+			yield return null;
+
 
 
 		}
