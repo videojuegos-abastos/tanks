@@ -7,6 +7,7 @@ using Unity.Netcode;
 
 namespace Tank
 {
+	// Toda la lógica se ejecuta en el servidor
 	public class BulletControl : NetworkBehaviour
 	{
 
@@ -24,17 +25,15 @@ namespace Tank
 
 			yield return new WaitForSeconds(countDownTime);
 
-			StartCoroutine(nameof(DetonateCoroutine));
+			Detonate();
 		}
 
-		IEnumerator DetonateCoroutine()
+		void Detonate()
 		{
 
 			if (OnDetonateEvent == null) throw new System.Exception("BulletControl: OnDetonateEvent is null (DetonateCoroutine)");
 
 			OnDetonateEvent.Invoke();
-
-			yield return null;
 
 			Destroy(gameObject);
 			//gameObject.SetActive(false);
@@ -54,6 +53,7 @@ namespace Tank
 
 		void Update()
 		{
+			if (!IsServer) return;
 			transform.position += -transform.up * velocity * Time.deltaTime;
 		}
 	}

@@ -23,12 +23,13 @@ namespace Tank
 
 		UnityEvent OnBulletDetonateEvent;
 		
-		int remainingBullets;
-		bool ableToShoot => remainingBullets > 0;
+		NetworkVariable<int> remainingBullets = new NetworkVariable<int>(default, NetworkVariableReadPermission.Owner, NetworkVariableWritePermission.Server);
+		bool ableToShoot => remainingBullets.Value > 0;
 
 		void Start()
 		{
-			remainingBullets = numBullets;
+
+			remainingBullets.Value = numBullets;
 
 			OnBulletDetonateEvent = new UnityEvent();
 			OnBulletDetonateEvent.AddListener(OnBulletDetonate);
@@ -45,7 +46,7 @@ namespace Tank
 
 		void OnBulletDetonate()
 		{
-			remainingBullets += 1;
+			remainingBullets.Value += 1;
 		}
 
 
@@ -57,7 +58,7 @@ namespace Tank
 
 			if (shoot)
 			{
-				StartCoroutine(nameof(ShootCoroutine));
+				Shoot_ServerRpc();
 			}
 
 		}
@@ -74,23 +75,20 @@ namespace Tank
 			this.transform.rotation = Quaternion.Euler(0, 0, _angleDeg + 90);
 		}
 
-		IEnumerator ShootCoroutine()
+
+		[ServerRpc(RequireOwnership = true)]
+		void Shoot_ServerRpc(ServerRpcParams rpcParams = default)
 		{
 
-			remainingBullets -= 1;
+			remainingBullets.Value -= 1;
 
 			Vector3 _offset = -transform.up * spawnOffset;
 			BulletControl _bullet = Instantiate<BulletControl>(bullet, transform.position + _offset, transform.rotation);
 			_bullet.OnDetonateEvent = OnBulletDetonateEvent;
 
 
-			_bullet.GetComponent<NetworkObject>().Spawn();
-			//_bullet.GetComponent<NetworkObject>().SpawnWithOwnership();
-
-			yield return null;
-
-
-
+			//_bullet.GetComponent<NetworkObject>().Spawn();
+			_bullet.GetComponent<NetworkObject>().SpawnWithOwnership(rpcParams.Receive.SenderClientId);
 		}
 
 		void OnDrawGizmosSelected()

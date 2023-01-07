@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8566704004410660917}
   - component: {fileID: 8566704004410660916}
   - component: {fileID: 5822407480292551729}
-  - component: {fileID: 8603522654905132947}
+  - component: {fileID: 5785471313355201020}
   m_Layer: 0
   m_Name: bullet
   m_TagString: Untagged
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 3
   countDownTime: 2
-  OnDetonatesEvent:
+  OnDetonateEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &5822407480292551729
@@ -120,7 +120,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &8603522654905132947
+--- !u!114 &5785471313355201020
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,13 +134,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SyncPositionX: 1
   SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
