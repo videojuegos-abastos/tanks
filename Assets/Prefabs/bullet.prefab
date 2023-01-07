@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: 3
-  countDownTime: 2
+  countDownTime: 3
   OnDetonateEvent:
     m_PersistentCalls:
       m_Calls: []
