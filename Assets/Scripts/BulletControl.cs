@@ -56,5 +56,10 @@ namespace Tank
 			if (!IsServer) return;
 			transform.position += -transform.up * velocity * Time.deltaTime;
 		}
+
+		void OnTriggerEnter2D(Collider2D collider)
+		{
+			Destroy(gameObject);
+		}
 	}
 }

@@ -94,7 +94,7 @@ namespace Tank
 		void OnDrawGizmosSelected()
 		{
 			Vector3 _offset = new Vector3(0, -spawnOffset, 0);
-			//Gizmos.DrawSphere(transform.position + _offset, .1f);
+			Gizmos.DrawSphere(transform.position + _offset, .1f);
 		}
 
 	}
