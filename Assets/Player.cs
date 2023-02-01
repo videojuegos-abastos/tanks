@@ -13,19 +13,17 @@ public class Player : NetworkBehaviour
         readPerm: NetworkVariableReadPermission.Everyone,
         writePerm: NetworkVariableWritePermission.Owner);
 
+    float timer = 0;
+
     void Start()
     {
         color.OnValueChanged += OnColorChanged;
-
-    }
-
-    void OnColorChanged3()
-    {
-        Debug.Log("Color has changed");
     }
 
     void Update()
     {
+
+        timer += Time.deltaTime;
 
 
         if (IsOwner)
@@ -37,8 +35,29 @@ public class Player : NetworkBehaviour
             {
                 color.Value = Random.ColorHSV();
             }
+
+            bool enterPressed = Input.GetKey(KeyCode.Return);
+            if (enterPressed)
+            {
+                Action_ServerRpc(timer);
+            }
         }
     }
+
+    [ServerRpc(RequireOwnership = true)]
+    void Action_ServerRpc(float time, ServerRpcParams rpcParams = default)
+    {
+        //Debug.Log($"Client: {rpcParams.Receive.SenderClientId} ha pulsado en t: {time}");
+        Action_ClientRpc(time);
+    }
+
+    [ClientRpc]
+    void Action_ClientRpc(float time, ClientRpcParams rpcParams = default)
+    {
+        Debug.Log($"Alguien ha pulsado Enter en t: {time}");
+    }
+
+
 
     void Move()
     {
@@ -55,3 +74,10 @@ public class Player : NetworkBehaviour
 
 
 }
+
+
+    // [ServerRpc(RequireOwnership = false)]
+    // void Action_ServerRpc(float time, ServerRpcParams rpcParams = default)
+    // {
+    //     Debug.Log($"Client: {rpcParams.Receive.SenderClientId} ha pulsado en t: {time}");
+    // }
