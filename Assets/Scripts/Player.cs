@@ -20,6 +20,10 @@ public class Player : NetworkBehaviour
         color.OnValueChanged += OnColorChanged;
     }
 
+    public override void OnNetworkSpawn()
+    {
+    }
+
     void Update()
     {
 
