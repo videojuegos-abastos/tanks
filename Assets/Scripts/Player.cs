@@ -2,86 +2,84 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player : NetworkBehaviour
 {
 
     [SerializeField]
-    float velocity;
+    Ball ball;
 
-    NetworkVariable<Color> color = new NetworkVariable<Color>(
+    NetworkVariable<bool> ready = new NetworkVariable<bool>(
         readPerm: NetworkVariableReadPermission.Everyone,
         writePerm: NetworkVariableWritePermission.Owner);
 
-    float timer = 0;
-
-    void Start()
-    {
-        color.OnValueChanged += OnColorChanged;
-    }
 
     public override void OnNetworkSpawn()
+    {
+
+        DontDestroyOnLoad(gameObject);
+        ready.OnValueChanged += OnReadyChanged;
+        
+        if (IsOwner)
+        {
+            ready.Value = false;
+
+            GameObject.Find("Ready").GetComponent<Button>().onClick.AddListener(OnReadyClick);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+    }
+
+    void OnReadyClick()
+    {
+        ready.Value = !ready.Value;
+    }
+
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        print("Scene Loaded");
+        //Instantiate<Ball>(ball);
+    }
+
+    void OnReadyChanged(bool previous, bool current)
+    {
+        if (IsServer)
+        {
+            ServerLogic();
+        }
+    }
+
+    [ClientRpc]
+    void StartGame_ClientRpc()
+    {
+        int activeBI = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(activeBI + 1);
+    }
+
+    [ServerRpc]
+    void Ready_ServerRpc()
     {
     }
 
     void Update()
     {
+    }
 
-        timer += Time.deltaTime;
-
-
-        if (IsOwner)
+    void ServerLogic()
+    {
+        bool start = true;
+        foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            Move();
-
-            bool spacePressed = Input.GetKey(KeyCode.Space);
-            if (spacePressed)
-            {
-                color.Value = Random.ColorHSV();
-            }
-
-            bool enterPressed = Input.GetKey(KeyCode.Return);
-            if (enterPressed)
-            {
-                Action_ServerRpc(timer);
-            }
+            start = start && client.PlayerObject.gameObject.GetComponent<Player>().ready.Value;
         }
-    }
 
-    [ServerRpc(RequireOwnership = true)]
-    void Action_ServerRpc(float time, ServerRpcParams rpcParams = default)
-    {
-        //Debug.Log($"Client: {rpcParams.Receive.SenderClientId} ha pulsado en t: {time}");
-        Action_ClientRpc(time);
-    }
-
-    [ClientRpc]
-    void Action_ClientRpc(float time, ClientRpcParams rpcParams = default)
-    {
-        Debug.Log($"Alguien ha pulsado Enter en t: {time}");
-    }
-
-
-
-    void Move()
-    {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-        transform.position += new Vector3(h, v, 0) * velocity * Time.deltaTime;
-    }
-
-    void OnColorChanged(Color previous, Color current)
-    {
-        GetComponent<SpriteRenderer>().color = current;
+        if (start)
+        {
+            StartGame_ClientRpc();
+        }
     }
 
 
 }
-
-
-    // [ServerRpc(RequireOwnership = false)]
-    // void Action_ServerRpc(float time, ServerRpcParams rpcParams = default)
-    // {
-    //     Debug.Log($"Client: {rpcParams.Receive.SenderClientId} ha pulsado en t: {time}");
-    // }

@@ -15,15 +15,14 @@ public class NetworkTestManager : NetworkBehaviour
     public void StartClient()
     {
         GameObject c = GameObject.Find("Client");
-        string ip = c.transform.GetChild(0).GetChild(1).GetComponent<Text>().text;
-        string password = c.transform.GetChild(1).GetChild(1).GetComponent<Text>().text;
+        string ip = c.transform.GetChild(0).GetChild(2).GetComponent<Text>().text;
+        string password = c.transform.GetChild(1).GetChild(2).GetComponent<Text>().text;
 
-        if (ip == string.Empty)
+        if (ip != null && ip != string.Empty)
         {
-            ip = "127.0.0.1";
+            NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().ConnectionData.Address = ip;
         }
 
-        NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().ConnectionData.Address = ip;
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(password);
 
         NetworkManager.Singleton.StartClient();
