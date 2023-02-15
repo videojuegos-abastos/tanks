@@ -21,7 +21,7 @@ public class Player : NetworkBehaviour
 
         DontDestroyOnLoad(gameObject);
         ready.OnValueChanged += OnReadyChanged;
-        
+
         if (IsOwner)
         {
             ready.Value = false;
@@ -45,9 +45,15 @@ public class Player : NetworkBehaviour
 
     void OnReadyChanged(bool previous, bool current)
     {
-        if (IsServer)
+        // if (IsServer)
+        // {
+        //     ServerLogic();
+        // }
+
+        if (IsOwner)
         {
-            ServerLogic();
+            print("Cambia");
+            Ready_ServerRpc(ready.Value);
         }
     }
 
@@ -58,17 +64,27 @@ public class Player : NetworkBehaviour
         SceneManager.LoadScene(activeBI + 1);
     }
 
-    [ServerRpc]
-    void Ready_ServerRpc()
+    // Método B
+    int readyCount = 0;
+    [ServerRpc(RequireOwnership = true)]
+    void Ready_ServerRpc(bool ready)
     {
+        int clientCount = NetworkManager.Singleton.ConnectedClientsList.Count;
+
+        readyCount = (ready) ? ++readyCount : --readyCount;
+
+        print($"Jugadores listos: {readyCount}.");
+
+        if (readyCount == clientCount)
+        {
+            StartGame_ClientRpc();
+        }
     }
 
-    void Update()
-    {
-    }
-
+    // Método A
     void ServerLogic()
     {
+
         bool start = true;
         foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
         {
