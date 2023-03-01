@@ -8,26 +8,34 @@ using UnityEngine.SceneManagement;
 public class Player : NetworkBehaviour
 {
 
-    [SerializeField]
-    Ball ball;
+    public static Player owner;
 
-    NetworkVariable<bool> ready = new NetworkVariable<bool>(
+    public NetworkVariable<bool> ready {get; private set;} = new NetworkVariable<bool>(
+        value: false,
         readPerm: NetworkVariableReadPermission.Everyone,
         writePerm: NetworkVariableWritePermission.Owner);
 
-
+    PlayerManager playerManager;
     public override void OnNetworkSpawn()
     {
+        playerManager = FindObjectOfType<PlayerManager>();
+        playerManager.AddPlayer(this);
 
         DontDestroyOnLoad(gameObject);
-        ready.OnValueChanged += OnReadyChanged;
 
         if (IsOwner)
         {
-            ready.Value = false;
+            owner = this;
 
+            // Me suscribo al onClick del botón ready para cambiar el valor de ready
+            // y al evento sceneLoaded para enterarme de cuando hemos cambiado de escena
             GameObject.Find("Ready").GetComponent<Button>().onClick.AddListener(OnReadyClick);
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        if (IsServer)
+        {
+            ready.OnValueChanged += (bool _, bool _) => CheckAllReady();
         }
     }
 
@@ -43,48 +51,10 @@ public class Player : NetworkBehaviour
         //Instantiate<Ball>(ball);
     }
 
-    void OnReadyChanged(bool previous, bool current)
+
+    // Comprobamos si todos los clientes están en "Ready"
+    void CheckAllReady()
     {
-        // if (IsServer)
-        // {
-        //     ServerLogic();
-        // }
-
-        if (IsOwner)
-        {
-            print("Cambia");
-            Ready_ServerRpc(ready.Value);
-        }
-    }
-
-    [ClientRpc]
-    void StartGame_ClientRpc()
-    {
-        int activeBI = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(activeBI + 1);
-    }
-
-    // Método B
-    int readyCount = 0;
-    [ServerRpc(RequireOwnership = true)]
-    void Ready_ServerRpc(bool ready)
-    {
-        int clientCount = NetworkManager.Singleton.ConnectedClientsList.Count;
-
-        readyCount = (ready) ? ++readyCount : --readyCount;
-
-        print($"Jugadores listos: {readyCount}.");
-
-        if (readyCount == clientCount)
-        {
-            StartGame_ClientRpc();
-        }
-    }
-
-    // Método A
-    void ServerLogic()
-    {
-
         bool start = true;
         foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -95,6 +65,15 @@ public class Player : NetworkBehaviour
         {
             StartGame_ClientRpc();
         }
+    }
+
+    // Cambiamos de escena en todos los clientes
+    [ClientRpc]
+    void StartGame_ClientRpc()
+    {
+        // Cambio a la siguiente escena
+        int activeBI = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(activeBI + 1);
     }
 
 
